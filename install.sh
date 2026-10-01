@@ -50,3 +50,4 @@ mkdir -p \
 cp kitty.conf "$HOME/.config/kitty/kitty.conf"
 cp hyprland.conf "$HOME/.config/hypr/hyprland.conf"
 cp -r nvim "$HOME/.config/"
+cp -r waybar "$HOME/.config/"
