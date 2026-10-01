@@ -2,31 +2,51 @@
 
 set -euo pipefail
 
-packages=(
-  broadcom-wl
+official_packages=(
   wofi
   waybar
-  waypaper
-  sotavpn
-  zen-browser
   neovim
   git
-  ssh
+  openssh
   hyprland
   kitty
   go
   htop
   npm
   linux-headers
-  kitty
+  base-devel
+  ranger
 )
 
-sudo pacman -Syu --needed "${packages[@]}"
-yay -S bookokrat-bin
+aur_packages=(
+  broadcom-wl
+  waypaper
+  sotavpn
+  zen-browser
+  bookokrat-bin
+)
 
-mkdir .config/hyprland
-mkdir .config/kitty
-cp kitty.conf .config/kitty/
-cp hyprland.conf .config/hyprland/
-cp -r nvim .config/
+sudo pacman -Syu --needed "${official_packages[@]}"
 
+if ! command -v yay >/dev/null 2>&1; then
+  tmp_dir="$(mktemp -d)"
+
+  git clone https://aur.archlinux.org/yay.git "$tmp_dir/yay"
+
+  (
+    cd "$tmp_dir/yay"
+    makepkg -si --noconfirm
+  )
+
+  rm -rf "$tmp_dir"
+fi
+
+yay -S --needed "${aur_packages[@]}"
+
+mkdir -p \
+  "$HOME/.config/hypr" \
+  "$HOME/.config/kitty"
+
+cp kitty.conf "$HOME/.config/kitty/kitty.conf"
+cp hyprland.conf "$HOME/.config/hypr/hyprland.conf"
+cp -r nvim "$HOME/.config/"
